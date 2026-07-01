@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="TypeInsight AI analyzes anonymized typing behavior locally after explicit consent." />
+  <title>TypeInsight AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#typingLab">Skip to typing lab</a>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand" aria-label="TypeInsight AI home">
+        <span class="brand-mark" aria-hidden="true">TI</span>
+        <div>
+          <strong>TypeInsight AI</strong>
+          <span>Privacy-first typing analytics</span>
+        </div>
+      </div>
+
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#dashboard">Dashboard</a>
+        <a href="#insights">Insights</a>
+        <a href="#history">History</a>
+      </nav>
+
+      <div class="topbar-actions">
+        <a class="profile-link" href="https://github.com/k3shvz" target="_blank" rel="noopener noreferrer" aria-label="Open k3shvz on GitHub">
+          <img src="https://github.com/k3shvz.png" alt="k3shvz GitHub profile picture" />
+          <span>k3shvz</span>
+        </a>
+        <button class="icon-button" id="themeToggle" type="button" aria-label="Toggle light and dark mode">
+          <span aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="heroTitle">
+        <div class="hero-copy">
+          <p class="eyebrow">Local-only metrics after opt-in</p>
+          <h1 id="heroTitle">Understand your typing rhythm without exposing what you type.</h1>
+          <p>
+            TypeInsight AI turns anonymized keystroke metrics into real-time performance cards,
+            trend charts, fatigue signals, and practical coaching.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-action" href="#typingLab">Start private session</a>
+            <button class="secondary-action" id="openPrivacy" type="button">Review privacy model</button>
+          </div>
+        </div>
+
+        <aside class="consent-card" aria-labelledby="consentTitle">
+          <div class="status-pill" id="consentStatus">Collection paused</div>
+          <h2 id="consentTitle">Explicit consent required</h2>
+          <p>
+            Metrics begin only after you opt in. Typed content is never saved, transmitted,
+            or shown in exports.
+          </p>
+          <label class="consent-toggle">
+            <input type="checkbox" id="consentToggle" />
+            <span>Allow anonymous local analytics for this session</span>
+          </label>
+        </aside>
+      </section>
+
+      <section class="dashboard-grid" id="dashboard" aria-label="Live typing dashboard">
+        <article class="metric-card accent-cyan">
+          <span class="metric-label">WPM</span>
+          <strong id="wpmMetric">0</strong>
+          <small>Real-time speed</small>
+        </article>
+        <article class="metric-card accent-green">
+          <span class="metric-label">Accuracy</span>
+          <strong id="accuracyMetric">100%</strong>
+          <small>Backspace-adjusted</small>
+        </article>
+        <article class="metric-card accent-red">
+          <span class="metric-label">Error Rate</span>
+          <strong id="errorMetric">0%</strong>
+          <small>Corrections per keypress</small>
+        </article>
+        <article class="metric-card accent-amber">
+          <span class="metric-label">Confidence</span>
+          <strong id="confidenceMetric">0%</strong>
+          <small>Composite session score</small>
+        </article>
+      </section>
+
+      <section class="workspace" id="typingLab">
+        <div class="typing-panel glass-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Typing lab</p>
+              <h2>Private practice pad</h2>
+            </div>
+            <div class="session-clock" id="sessionClock" aria-live="polite">00:00</div>
+          </div>
+
+          <p class="privacy-note">
+            Content is analyzed in memory only and cleared after each session. Saved analytics
+            contain aggregate counts and timing statistics only.
+          </p>
+
+          <textarea
+            id="typingInput"
+            rows="9"
+            placeholder="Opt in, then type naturally here. Your actual words are never stored."
+            aria-label="Private typing practice area"
+            disabled
+          ></textarea>
+
+          <div class="control-row">
+            <button class="primary-action" id="startSession" type="button">Start session</button>
+            <button class="secondary-action" id="finishSession" type="button">Finish & save metrics</button>
+            <button class="ghost-action" id="resetSession" type="button">Reset pad</button>
+          </div>
+        </div>
+
+        <aside class="insight-panel glass-panel" id="insights" aria-labelledby="insightsTitle">
+          <div class="panel-heading compact">
+            <div>
+              <p class="eyebrow">AI features</p>
+              <h2 id="insightsTitle">Insights</h2>
+            </div>
+            <div class="mini-ring" id="fatigueRing" aria-label="Fatigue risk score">0%</div>
+          </div>
+          <div class="insight-list" id="insightList" aria-live="polite"></div>
+        </aside>
+      </section>
+
+      <section class="analytics-grid" aria-label="Charts and heatmap">
+        <article class="chart-card glass-panel">
+          <div class="panel-heading compact">
+            <div>
+              <p class="eyebrow">Rhythm graph</p>
+              <h2>Speed trend</h2>
+            </div>
+            <span class="chart-caption">Last 32 intervals</span>
+          </div>
+          <canvas id="rhythmChart" width="900" height="360" aria-label="Typing rhythm line chart"></canvas>
+        </article>
+
+        <article class="chart-card glass-panel">
+          <div class="panel-heading compact">
+            <div>
+              <p class="eyebrow">Key frequency only</p>
+              <h2>Keyboard heatmap</h2>
+            </div>
+            <span class="chart-caption">No typed words stored</span>
+          </div>
+          <div class="keyboard" id="keyboardHeatmap" aria-label="Keyboard heatmap"></div>
+        </article>
+      </section>
+
+      <section class="history-panel glass-panel" id="history" aria-labelledby="historyTitle">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Trend analysis</p>
+            <h2 id="historyTitle">Session history</h2>
+          </div>
+          <div class="control-row tight">
+            <button class="secondary-action" id="exportCsv" type="button">Export CSV</button>
+            <button class="secondary-action" id="exportPdf" type="button">Export PDF</button>
+            <button class="danger-action" id="deleteAll" type="button">Delete analytics</button>
+          </div>
+        </div>
+        <div class="history-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>WPM</th>
+                <th>Accuracy</th>
+                <th>Backspaces</th>
+                <th>Pauses</th>
+                <th>Duration</th>
+                <th>Confidence</th>
+              </tr>
+            </thead>
+            <tbody id="historyTable"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="privacyDialog" aria-labelledby="privacyTitle">
+    <form method="dialog">
+      <div class="panel-heading compact">
+        <div>
+          <p class="eyebrow">Privacy & security</p>
+          <h2 id="privacyTitle">What TypeInsight AI collects</h2>
+        </div>
+        <button class="icon-button" value="close" aria-label="Close privacy dialog">×</button>
+      </div>
+      <ul class="privacy-list">
+        <li>Requires explicit opt-in before collecting metrics.</li>
+        <li>Never stores or exports the actual text typed.</li>
+        <li>Processes session analytics locally in the browser.</li>
+        <li>Saves only anonymized aggregates such as WPM, timing, and key frequency.</li>
+        <li>Lets you delete all local analytics at any time.</li>
+      </ul>
+      <button class="primary-action" value="close">Got it</button>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
